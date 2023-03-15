@@ -12,125 +12,24 @@ export default {
     CharacterCard,
     FiltersAside,
     SearchBar
-  },
-  data() {
-    return {
-      searchByEpisode: false,
-      filtersSelected: {status:"",gender:"",whatToSearch:"name"},
-      characters: [],
-      episodes:[],
-      query: '',
-      status: '',
-      url: 'https://rickandmortyapi.com/api/character/',
-      nextUrlCharacters:"",
-      urlEpisodes:"https://rickandmortyapi.com/api/episode",
-      nextUrlEpisodes:"",
-      filters: {
-        texts :  [
-            {name: "name", text: "Name"},
-          {name: "species", text: "Species"},
-          {name: "type", text: "Sub-species"},
-          {name: "episodes", text: "Episode name"}],
-        comboFilters: {
-          status:[{name: "notStatus", text: "---"},{name: "unknownStatus", text: "Unknown"}, {name: "Alive", text: "Alive"}, {name: "Dead", text: "Dead"}],
-          gender:[{name: "notGender", text: "---"},{name: "Female", text: "Female"}, {name: "Male", text: "Male"}, {name: "Genderless", text: "Genderless"},{name: "unknown", text: "Unknown"}]}
-      }
-    };
-  },
-  watch: {
-    query() {
-      this.search();
+  },computed: {
+    characters() {
+      return this.$store.getters['charactersAndEpisodes/getCharacters'];
     },
-    filtersSelected: {
-      handler(newValue, oldValue) {
-        this.search()
-      },
-      deep: true
+    episodes() {
+      return this.$store.getters['charactersAndEpisodes/getEpisodes'];
     },
-
-
+    searchByEpisode(){
+      return this.$store.getters['search/getSearchByEpisode'];
+    }
   },
   methods: {
-    setWhatToSearch(query){
-      if(query=="episodes")
-        this.searchByEpisode=true
-      else
-        this.searchByEpisode=false
-      this.filtersSelected.whatToSearch= query
-    },
-    setFilters(filter){
-      switch (filter.target.value) {
-        case "Alive":
-          this.filtersSelected.status=filter.target.value;
-          break;
-        case "Dead" :
-          this.filtersSelected.status=filter.target.value;
-          break;
-        case "unknownStatus":
-          this.filtersSelected.status= "unknown";
-          break;
-        case "notStatus":
-          this.filtersSelected.status="";
-          break;
-        case "Female":
-          this.filtersSelected.gender= filter.target.value;
-          break;
-        case "Male":
-          this.filtersSelected.gender= filter.target.value;
-          break;
-        case "Genderless":
-          this.filtersSelected.gender= filter.target.value;
-          break;
-        case "unknown":
-          this.filtersSelected.gender= filter.target.value;
-          break;
-        case "notGender":
-          this.filtersSelected.gender="";
-          break
-      }
-    },
-
-    setQuery(query) {
-      this.query = query;
-    },
-    search(){
-      if(this.filtersSelected.whatToSearch=="episodes"){
-        fetch(this.urlEpisodes +"?name=" + this.query).then(response => response.json())
-            .then(data => {
-              this.nextUrlEpisodes= data.info.next;
-              this.episodes = data.results;
-              console.log(this.characters);
-            });
-      }
-      else
-        fetch(this.url + '?'+ this.filtersSelected.whatToSearch+'=' + this.query + (this.filtersSelected.status ? '&status=' + this.filtersSelected.status : '')+
-            (this.filtersSelected.gender ? '&gender=' + this.filtersSelected.gender : '')).then(response => response.json())
-            .then(data => {
-              this.nextUrlCharacters=data.info.next;
-              this.characters = data.results;
-              console.log(this.characters);
-            });
-    },
     next() {
-      if(this.filtersSelected.whatToSearch=="episodes"){
-        fetch(this.nextUrlEpisodes).then(response => response.json())
-            .then(data => {
-              this.nextUrlEpisodes= data.info.next;
-              this.episodes.push(...data.results);
-            });
-      }
-      else
-      fetch(this.nextUrlCharacters).then(response => response.json())
-          .then(data => {
-            this.nextUrlCharacters=data.info.next;
-            this.characters.push(...data.results);
-            console.log(this.characters);
-          });
+      this.$store.dispatch('charactersAndEpisodes/next',{root: true});
     },
   },
   created() {
-
-    this.search()
+    this.$store.dispatch('charactersAndEpisodes/search');
   },
 
 };
@@ -140,19 +39,18 @@ export default {
 
     <header class="header">
 
-      <search-bar v-bind:texts="filters.texts" v-on:change="setWhatToSearch" v-on:search="setQuery"/>
+      <search-bar />
     </header>
   <div class="body" >
     <transition>
       <aside class = "aside" v-if="!searchByEpisode">
-        <filters-aside v-bind:filters="filters.comboFilters" v-on:change="setFilters" ></filters-aside>
+        <filters-aside></filters-aside>
       </aside>
     </transition>
     <transition>
     <main class = "main characters" v-if="!searchByEpisode">
       <grid class="scrolling-component" ref="scrollComponent">
         <transition-group  name="card">
-
           <character-card class="card" v-for= "character in characters" v-bind:key="character.id" v-bind:url="null" v-bind:character="character"></character-card>
         </transition-group>
       </grid>

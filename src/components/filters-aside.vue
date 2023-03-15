@@ -5,17 +5,17 @@
     <label for="genderSelect " v-if="hideFilters">Gender: </label>
     </transition>
     <transition>
-    <select id="genderSelect " v-on:change="$emit('change',$event.value)" v-if="hideFilters">
-      <option v-for= "gender in filters.gender" v-bind:value="gender.text" >{{gender.text}}</option>
+    <select id="genderSelect " v-on:change="changefilter($event.target.value)" v-if="hideFilters">
+      <option v-for= "gender in genders" v-bind:value="gender.text" >{{gender.text}}</option>
 
     </select>
     </transition>
     <transition>
-    <label for="statusSelect " v-on:change="$emit('change',$event.value)" v-if="hideFilters">Status: </label>
+    <label for="statusSelect "  v-if="hideFilters">Status: </label>
     </transition>
     <transition>
-    <select id="statusSelect " v-if="hideFilters">
-      <option v-for= "status in filters.status" v-bind:value="status.name" >{{status.text}}</option>
+    <select id="statusSelect " v-if="hideFilters" v-on:change="changefilter($event.target.value)">
+      <option v-for= "state in status" v-bind:value="state.name" >{{state.text}}</option>
     </select>
     </transition>
   </div>
@@ -27,7 +27,14 @@ export default {
   props: ['filters'],
   data() {
     return{
-      hideFilters : false
+      hideFilters : true
+    }
+  },computed: {
+    genders() {
+      return this.$store.getters['search/getGender'];
+    },
+    status() {
+      return this.$store.getters['search/getStatus'];
     }
   },
   methods:{
@@ -36,6 +43,11 @@ export default {
         this.hideFilters=false;
       }
       else this.hideFilters= true;
+    },
+    changefilter(filter){
+      this.$store.commit('search/setSelectedFilters', filter,{root: true});
+
+      this.$store.dispatch('charactersAndEpisodes/search');
     }
   }
 }
