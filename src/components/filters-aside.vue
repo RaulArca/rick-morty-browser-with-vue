@@ -22,35 +22,39 @@
 
 </template>
 
-<script>
-export default {
-  props: ['filters'],
-  data() {
-    return{
-      hideFilters : true
-    }
-  },computed: {
-    genders() {
-      return this.$store.getters['search/getGender'];
-    },
-    status() {
-      return this.$store.getters['search/getStatus'];
-    }
-  },
-  methods:{
-    hide(){
-      if(this.hideFilters){
-        this.hideFilters=false;
-      }
-      else this.hideFilters= true;
-    },
-    changefilter(filter){
-      this.$store.commit('search/setSelectedFilters', filter,{root: true});
+<script lang="ts">
+import { defineComponent } from 'vue'
 
-      this.$store.dispatch('charactersAndEpisodes/search');
-    }
-  }
-}
+   export default defineComponent ({
+    data() {
+      return{
+        hideFilters : true
+      }
+    },
+     computed: {
+       genders() {
+         return this.$store.getters['search/getGender'];
+       },
+       status() {
+         return this.$store.getters['search/getStatus'];
+       }
+     },
+     methods:{
+       hide(){
+         if(this.hideFilters){
+           this.hideFilters=false;
+         }
+         else this.hideFilters= true;
+       },
+       changefilter(filter:string){
+         this.$store.commit('search/setSelectedFilters', filter,{root: true});
+
+         this.$store.dispatch('charactersAndEpisodes/search');
+       }
+     }
+  })
+
+
 </script>
 
 <style scoped>

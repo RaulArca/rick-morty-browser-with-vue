@@ -14,5 +14,17 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.0.0",
     "vite": "^4.0.0"
-  }
+  },
+  "description": "this project was developed during the academy in Empathy, with the objective of learning about vue.",
+  "main": "vite.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RaulArca/rick-morty-browser-with-vue.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RaulArca/rick-morty-browser-with-vue/issues"
+  },
+  "homepage": "https://github.com/RaulArca/rick-morty-browser-with-vue#readme"
 }
