@@ -5,35 +5,38 @@
 <input class="input" placeholder="write to search" v-on:input="setQuery($event.target.value)"/>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+
+import {defineComponent} from "vue";
+import {store} from "../store/store";
+export default defineComponent ({
   props: ['texts'],
   computed: {
     WhatToSearch() {
-      return this.$store.getters['search/getWhatToSearch'];
+      return store.getters['search/getWhatToSearch'];
     },
     query(){
-      return this.$store.getters["search/getQuery"];
+      return store.getters["search/getQuery"];
     },
 
   },
   watch: {
     query() {
-      this.$store.dispatch('charactersAndEpisodes/search');
+      store.dispatch('charactersAndEpisodes/search');
     },
   },
   methods:{
-    setQuery(query) {
-      this.$store.commit('search/setQuery', query)
+    setQuery(query:string) {
+      store.commit('search/setQuery', query)
     },
-    setWhatToSearch(query){
-      this.$store.commit('search/setSelectedFiltersWhatToWatch', query);
+    setWhatToSearch(query:string){
+      store.commit('search/setSelectedFiltersWhatToWatch', query);
 
-      this.$store.dispatch('charactersAndEpisodes/search');
+      store.dispatch('charactersAndEpisodes/search');
 
     },
   }
-}
+})
 </script>
 
 <style scoped>

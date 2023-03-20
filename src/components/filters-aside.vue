@@ -6,7 +6,7 @@
     </transition>
     <transition>
     <select id="genderSelect " v-on:change="changefilter($event.target.value)" v-if="hideFilters">
-      <option v-for= "gender in genders" v-bind:value="gender.text" >{{gender.text}}</option>
+      <option v-for= "gender in genders" v-bind:value="gender.name" >{{gender.text}}</option>
 
     </select>
     </transition>
@@ -24,19 +24,20 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { store } from '../store/store';
 
    export default defineComponent ({
     data() {
       return{
-        hideFilters : true
+        hideFilters  : true
       }
     },
      computed: {
        genders() {
-         return this.$store.getters['search/getGender'];
+         return store.getters['search/getGender'];
        },
        status() {
-         return this.$store.getters['search/getStatus'];
+         return store.getters['search/getStatus'];
        }
      },
      methods:{
@@ -46,11 +47,13 @@ import { defineComponent } from 'vue'
          }
          else this.hideFilters= true;
        },
-       changefilter(filter:string){
-         this.$store.commit('search/setSelectedFilters', filter,{root: true});
 
-         this.$store.dispatch('charactersAndEpisodes/search');
+       changefilter(filter:string){
+         store.commit('search/setSelectedFilters', filter,{root: true});
+
+         store.dispatch('charactersAndEpisodes/search');
        }
+
      }
   })
 

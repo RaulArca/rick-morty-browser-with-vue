@@ -7,10 +7,11 @@
 </div>
 </template>
 
-<script lang="js">
-import CharacterCard from "@/components/character-card.vue";
-import Grid from "@/components/Grid.vue";
-export default {
+<script lang="ts">
+import CharacterCard from "./character-card.vue";
+import Grid from "./Grid.vue";
+import { defineComponent } from 'vue'
+export default defineComponent ({
   components: {
     Grid,
     CharacterCard,
@@ -28,10 +29,10 @@ export default {
   name: "episodes-grid",
   data() {
     return {
-      episodecharacters  :[]
+      episodecharacters  : []
     }
   }
-}
+})
 </script>
 
 <style scoped>
